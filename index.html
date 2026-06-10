@@ -65,20 +65,18 @@
             min-height: 300px;
         }
 
-        #webcam {
+        #webcam, #canvas {
             width: 100%;
             height: auto;
             display: block;
             transform: scaleX(-1);
+            transform-origin: center;
         }
 
         #canvas {
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            transform: scaleX(-1);
         }
 
         .gesture-panel {
@@ -420,7 +418,7 @@
             });
             
             if (gestureType) {
-                const activeCard = document.querySelector(`.gesture-card[data-gesture="${gestureType}"]`);
+                const activeCard = document.querySelector(.gesture-card[data-gesture="${gestureType}"]);
                 if (activeCard) {
                     activeCard.classList.add('active');
                 }
@@ -525,7 +523,7 @@
                 this.currentPlayer = 'X';
                 
                 document.querySelectorAll('.choice-btn').forEach(btn => btn.classList.remove('selected'));
-                document.getElementById(`choose-${symbol.toLowerCase()}`).classList.add('selected');
+                document.getElementById(choose-${symbol.toLowerCase()}).classList.add('selected');
                 
                 this.reset();
             }
@@ -557,7 +555,7 @@
                 
                 this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
                 this.statusElement.textContent = this.currentPlayer === this.playerSymbol ? 
-                    `YOUR TURN (${this.currentPlayer})` : `BOT THINKING... (${this.currentPlayer})`;
+                    YOUR TURN (${this.currentPlayer}) : BOT THINKING... (${this.currentPlayer});
                 this.statusElement.className = 'status active';
                 
                 if (!this.gameOver && this.currentPlayer === this.botSymbol) {
@@ -695,7 +693,7 @@
                 }
                 
                 const positions = ['Top-Left', 'Top-Center', 'Top-Right', 'Middle-Left', 'Center', 'Middle-Right', 'Bottom-Left', 'Bottom-Center', 'Bottom-Right'];
-                document.getElementById('selected-display').innerHTML = `📍 Selected: ${positions[currentSelectedCell]}`;
+                document.getElementById('selected-display').innerHTML = 📍 Selected: ${positions[currentSelectedCell]};
             }
 
             reset() {
@@ -705,7 +703,7 @@
                 this.currentPlayer = 'X';
                 this.updateUI();
                 this.statusElement.textContent = this.currentPlayer === this.playerSymbol ? 
-                    `YOUR TURN (${this.playerSymbol})` : `BOT'S TURN (${this.botSymbol})`;
+                    YOUR TURN (${this.playerSymbol}) : BOT'S TURN (${this.botSymbol});
                 this.statusElement.className = 'status active';
                 currentSelectedCell = 4;
                 this.updateSelectedHighlight();
@@ -755,7 +753,8 @@
                 const deltaX = palmX - previousPalmX;
                 
                 if (Math.abs(deltaX) > 0.05 && (now - lastWaveTime) > 150) {
-                    const direction = deltaX > 0 ? 'right' : 'left';
+                    // Mirror the detected horizontal motion so gestures match the mirrored preview
+                    const direction = deltaX > 0 ? 'left' : 'right';
                     
                     if (lastDirectionX === direction && !waveConfirmationX) {
                         waveConfirmationX = true;
@@ -841,7 +840,7 @@
             previousPalmY = palmY;
             
             // Debug info
-            document.getElementById('debug-info').innerHTML = `Palm: (${palmX.toFixed(3)}, ${palmY.toFixed(3)}) | X:${lastDirectionX || '-'} Y:${lastDirectionY || '-'}`;
+            document.getElementById('debug-info').innerHTML = Palm: (${palmX.toFixed(3)}, ${palmY.toFixed(3)}) | X:${lastDirectionX || '-'} Y:${lastDirectionY || '-'};
             
             // ============ OPEN PALM DETECTION ============
             const fingersExtended = (
@@ -858,7 +857,7 @@
                     showDetectedGesture('place');
                     const success = game.makeMove(currentSelectedCell);
                     if (success) {
-                        showFeedback('🤚', `Placed ${game.playerSymbol} on cell ${currentSelectedCell + 1}`);
+                        showFeedback('🤚', Placed ${game.playerSymbol} on cell ${currentSelectedCell + 1});
                     } else {
                         showFeedback('❌', 'Cell already taken!');
                     }
@@ -868,9 +867,9 @@
         
         function showFeedback(emoji, text) {
             const statusDiv = document.getElementById('gesture-status');
-            statusDiv.innerHTML = `${emoji} ${text}`;
+            statusDiv.innerHTML = ${emoji} ${text};
             setTimeout(() => {
-                if (document.getElementById('gesture-status').innerHTML === `${emoji} ${text}`) {
+                if (document.getElementById('gesture-status').innerHTML === ${emoji} ${text}) {
                     statusDiv.innerHTML = '✋ Wave L/R/U/D to move | Open Palm to place';
                 }
             }, 1500);
@@ -893,10 +892,6 @@
             
             if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
                 const landmarks = results.multiHandLandmarks[0];
-                
-                ctx.save();
-                ctx.scale(-1, 1);
-                ctx.translate(-canvasElement.width, 0);
                 
                 const connections = [
                     [0,1], [1,2], [2,3], [3,4],
@@ -928,14 +923,13 @@
                     ctx.fill();
                 }
                 
-                ctx.restore();
                 detectGesture(landmarks);
             }
         }
         
         async function setupCamera() {
             const hands = new Hands({
-                locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+                locateFile: (file) => https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}
             });
             
             hands.setOptions({
